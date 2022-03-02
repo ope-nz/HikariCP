@@ -9,8 +9,6 @@ import anywheresoftware.b4j.objects.SQL;
 import anywheresoftware.b4a.keywords.Common;
 
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.SQLException;
-import java.util.concurrent.Callable;
 
 @Version(5.01F)
 @Author("ope")
@@ -60,10 +58,16 @@ public class HikariDataSourceWrapper {
     return false;
   }
 
-  public SQL GetConnection() throws SQLException {
+  public SQL GetConnection(){
     SQL sQL = new SQL();
-    sQL.connection = hikariDataSource.getConnection();
-    return sQL;
+    try
+    {
+      sQL.connection = hikariDataSource.getConnection();      
+    }
+    catch (Exception e) {
+      Common.Log(e.toString());
+    } 
+    return sQL;   
   }
 
   public int getMaximumPoolSize() {
