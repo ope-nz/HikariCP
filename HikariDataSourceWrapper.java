@@ -27,11 +27,22 @@ public class HikariDataSourceWrapper {
     return IsInitialised;
   }
 
-  public void Initialize(String driverClassName, String JdbcUrl) {
+  public void Initialize(String JdbcUrl, String user, String password, String ConnectionTestQuery) {
     try {
       hikariDataSource = new HikariDataSource();
-      hikariDataSource.setDriverClassName(driverClassName);
       hikariDataSource.setJdbcUrl(JdbcUrl);
+
+      if (!EmptyString(user) && !EmptyString(password)) {
+        Common.Log("Adding credentials");
+        hikariDataSource.addDataSourceProperty("user", user);
+        hikariDataSource.addDataSourceProperty("password", password);
+      }
+
+      if (!EmptyString(ConnectionTestQuery)) {
+        Common.Log("Adding Connection Test Query");
+        hikariDataSource.setConnectionTestQuery(ConnectionTestQuery);
+      }
+
       IsInitialised = true;
     } catch (Exception e) {
       Common.Log(e.toString());
@@ -39,34 +50,14 @@ public class HikariDataSourceWrapper {
     }
   }
 
-  public void Initialize2(String driverClassName, String JdbcUrl, String user, String password) {
-    try {
-      HikariDataSource hikariDataSource = new HikariDataSource();
-      hikariDataSource.setDriverClassName(driverClassName);
-      hikariDataSource.setJdbcUrl(JdbcUrl);
-      hikariDataSource.addDataSourceProperty("user", user);
-      hikariDataSource.addDataSourceProperty("password", password);
-      IsInitialised = true;
-    } catch (Exception e) {
-      Common.Log(e.toString());
-      IsInitialised = false;
-    }
-  }
-
-  public void Initialize3(String driverClassName, String JdbcUrl, String user, String password, String ConnectionTestQuery) {
-    try {
-      HikariDataSource hikariDataSource = new HikariDataSource();
-      hikariDataSource.setDriverClassName(driverClassName);
-      hikariDataSource.setJdbcUrl(JdbcUrl);
-      hikariDataSource.addDataSourceProperty("user", user);
-      hikariDataSource.addDataSourceProperty("password", password);
-      hikariDataSource.setConnectionTestQuery(ConnectionTestQuery);
-      IsInitialised = true;
-    } catch (Exception e) {
-      Common.Log(e.toString());
-      IsInitialised = false;
-    }
-
+  private boolean EmptyString(String Input) {
+    if (Input == null)
+      return true;
+    if (Input == "null")
+      return true;
+    if (Input.length() == 0)
+      return true;
+    return false;
   }
 
   public SQL GetConnection() throws SQLException {
