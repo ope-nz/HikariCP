@@ -108,6 +108,54 @@ public class HikariDataSourceWrapper {
 
   public void ClosePool() {
     if (IsInitialised)
+    {
       hikariDataSource.close();
+      IsInitialised = false;
+    }
+  }
+
+
+  public int getThreadsAwaitingConnection()
+  {
+    try
+    {
+      return hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection();
+    }
+    catch (Exception e) {
+      return -1;
+    }    
+  }
+
+  public int getIdleConnections()
+  {
+    try
+    {
+      return hikariDataSource.getHikariPoolMXBean().getIdleConnections();
+    }
+    catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getTotalConnections()
+  {
+    try
+    {
+      return hikariDataSource.getHikariPoolMXBean().getTotalConnections();
+    }
+    catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getActiveConnections()
+  {
+    try
+    {
+      return hikariDataSource.getHikariPoolMXBean().getActiveConnections();
+    }
+    catch (Exception e) {
+      return -1;
+    }
   }
 }
